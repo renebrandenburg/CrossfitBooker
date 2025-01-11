@@ -1,17 +1,17 @@
-name: Python Lint and Test
+name: Test
 
 on:
-  push:
-    branches:
-      - main
-      - 'feature/*'
   pull_request:
     branches:
       - main
-      - 'feature/*'
+      - 'feature/*'  
+  push:
+    branches:
+      - main
+      - 'feature/*' 
 
 jobs:
-  lint_and_test:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,5 +28,5 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run pylint
-      run: pylint scraping_script.py
+    - name: Run tests
+      run: python -m unittest discover -s tests -v

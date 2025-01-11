@@ -33,15 +33,22 @@ class TestScrapingScript(unittest.TestCase):
         mock_page.fill.return_value = None
         mock_page.click.return_value = None
 
+        # Call the login function
         login(mock_page, "test_user", "test_pass", "1234", "recaptcha_solution")
 
+        # Assert the interactions with the Playwright page
         mock_page.goto.assert_called_with("https://crossfitrijswijk.virtuagym.com/")
         mock_page.fill.assert_any_call("#username", "test_user")
         mock_page.fill.assert_any_call("#password", "test_pass")
         mock_page.fill.assert_any_call("#confirm_code", "1234")
-        mock_page.evaluate.assert_called_with(
+
+        # Normalize and compare the evaluate call
+        expected_script = (
             "document.getElementById('g-recaptcha-response').value = 'recaptcha_solution';"
         )
+        actual_call_args = mock_page.evaluate.call_args[0][0].strip()
+        self.assertEqual(expected_script.strip(), actual_call_args)
+
         mock_page.click.assert_called_with("#login_btn")
 
 if __name__ == "__main__":

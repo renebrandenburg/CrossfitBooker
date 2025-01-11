@@ -1,17 +1,11 @@
-name: Python Lint and Test
+name: Scheduled Run
 
 on:
-  push:
-    branches:
-      - main
-      - 'feature/*'
-  pull_request:
-    branches:
-      - main
-      - 'feature/*'
+  schedule:
+    - cron: '0 12 * * *' # Run every day at 12 PM UTC
 
 jobs:
-  lint_and_test:
+  scheduled-run:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,5 +22,5 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run pylint
-      run: pylint scraping_script.py
+    - name: Run the scraper
+      run: python scraping_script.py
