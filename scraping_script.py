@@ -1,6 +1,11 @@
+"""
+Scraping script to automate logging in, navigating, and scraping schedules using Playwright.
+"""
+import os
+import time
+import requests
 from playwright.sync_api import sync_playwright
 from dotenv import load_dotenv
-import os
 
 # Load environment variables from .env file
 load_dotenv()
@@ -17,11 +22,10 @@ SITE_KEY = "6LfMFSkTAAAAACXKnvs3pxy2z-TO0478L7EEZuTZ"
 
 def solve_recaptcha(api_key, site_key, page_url):
     """Solve Google reCAPTCHA using 2Captcha."""
-    import requests
-    import time
 
     response = requests.post(
         "http://2captcha.com/in.php",
+        timeout=10,
         data={
             "key": api_key,
             "method": "userrecaptcha",
@@ -30,20 +34,28 @@ def solve_recaptcha(api_key, site_key, page_url):
         }
     )
     if "OK" not in response.text:
-        raise Exception(f"Error from 2Captcha: {response.text}")
+        raise ValueError(f"Error from 2Captcha: {response.text}")
     captcha_id = response.text.split("|")[1]
 
     # Poll for the solution
     solution = None
     while not solution:
         time.sleep(5)
-        result = requests.get(f"http://2captcha.com/res.php?key={api_key}&action=get&id={captcha_id}")
+        result = requests.get(
+        f"http://2captcha.com/res.php?key={api_key}&action=get&id={captcha_id}",
+        timeout=10)
         if "OK" in result.text:
             solution = result.text.split("|")[1]
 
     return solution
 
 def main():
+    """
+    Entry point for the script.
+
+    Initializes the Playwright browser, performs the login process, 
+    and handles scraping tasks.
+    """
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=False)
         context = browser.new_context()
