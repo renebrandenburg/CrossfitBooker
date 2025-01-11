@@ -1,0 +1,10 @@
+# Example .github/labeler.yml
+bug:
+  - "src/**/*.js"
+  - "tests/**/*.py"
+
+enhancement:
+  - "src/**/*.py"
+
+documentation:
+  - "*.md"
