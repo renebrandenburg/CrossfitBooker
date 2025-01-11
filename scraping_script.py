@@ -1,6 +1,8 @@
+import requests
+import time
+import os
 from playwright.sync_api import sync_playwright
 from dotenv import load_dotenv
-import os
 
 # Load environment variables from .env file
 load_dotenv()
@@ -17,8 +19,6 @@ SITE_KEY = "6LfMFSkTAAAAACXKnvs3pxy2z-TO0478L7EEZuTZ"
 
 def solve_recaptcha(api_key, site_key, page_url):
     """Solve Google reCAPTCHA using 2Captcha."""
-    import requests
-    import time
 
     response = requests.post(
         "http://2captcha.com/in.php",
