@@ -2,8 +2,7 @@ name: Scheduled Run
 
 on:
   schedule:
-    - cron: '0 12 * * *' # Run every day at 12 PM UTC
-
+    - cron: '0 12 1 * *' # Run every month
 jobs:
   scheduled-run:
     runs-on: ubuntu-latest
