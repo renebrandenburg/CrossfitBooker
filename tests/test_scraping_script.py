@@ -10,7 +10,7 @@ class TestScrapingScript(unittest.TestCase):
         """Test solving reCAPTCHA using 2Captcha."""
         mock_post.return_value.text = "OK|123456789"
         mock_get.side_effect = [
-            MagicMock(text="CAPCHA_NOT_READY"),
+            MagicMock(text="CAPTCHA_NOT_READY"),
             MagicMock(text="OK|solution-token")
         ]
 
