@@ -47,9 +47,9 @@ Ensure the following are installed on your system:
 
 ## Usage
 1. Update the configuration in `scraping_script.py`:
-   - `BASE_URL`: URL of the target website
-   - `BOOKING_GYM`: Name of the desired gym
-   - Provide your login credentials in the `.env` file (see below).
+   - `PAGE_URL`: URL of the login page
+   - `SITE_KEY`: Google reCAPTCHA site key
+   - Provide your login credentials in the `.env` file (see below)
 
 2. Create a `.env` file in the project root:
    ```plaintext
