@@ -20,8 +20,16 @@ CONFIRM_CODE = os.getenv("CONFIRM_CODE")
 PAGE_URL = "https://crossfitrijswijk.virtuagym.com/"
 SITE_KEY = "6LfMFSkTAAAAACXKnvs3pxy2z-TO0478L7EEZuTZ"
 
-def solve_recaptcha(api_key, site_key, page_url):
-    """Solve Google reCAPTCHA using 2Captcha."""
+def solve_recaptcha(api_key, site_key, page_url, max_retries=12):
+    """Solve Google reCAPTCHA using 2Captcha.
+
+    Args:
+        api_key: 2Captcha API key.
+        site_key: The site key for the reCAPTCHA widget.
+        page_url: URL of the page containing the reCAPTCHA.
+        max_retries: Maximum number of polling attempts while waiting for the
+            captcha solution. Defaults to 12.
+    """
 
     response = requests.post(
         "http://2captcha.com/in.php",
@@ -38,14 +46,20 @@ def solve_recaptcha(api_key, site_key, page_url):
     captcha_id = response.text.split("|")[1]
 
     # Poll for the solution
+    retries = 0
     solution = None
     while not solution:
+        if retries >= max_retries:
+            raise TimeoutError("Exceeded maximum retries while solving reCAPTCHA")
         time.sleep(5)
         result = requests.get(
-        f"http://2captcha.com/res.php?key={api_key}&action=get&id={captcha_id}",
-        timeout=10)
+            f"http://2captcha.com/res.php?key={api_key}&action=get&id={captcha_id}",
+            timeout=10,
+        )
         if "OK" in result.text:
             solution = result.text.split("|")[1]
+        else:
+            retries += 1
 
     return solution
 

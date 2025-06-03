@@ -19,6 +19,23 @@ class TestScrapingScript(unittest.TestCase):
         mock_post.assert_called_once()
         mock_get.assert_called()
 
+    @patch('scraping_script.requests.post')
+    @patch('scraping_script.requests.get')
+    def test_solve_recaptcha_retry_limit(self, mock_get, mock_post):
+        """Ensure an error is raised after exceeding max_retries."""
+        mock_post.return_value.text = "OK|123456789"
+        mock_get.return_value.text = "CAPTCHA_NOT_READY"
+
+        with self.assertRaises(TimeoutError):
+            solve_recaptcha(
+                "dummy_api_key",
+                "dummy_site_key",
+                "https://example.com",
+                max_retries=3,
+            )
+
+        self.assertEqual(mock_get.call_count, 3)
+
     @patch('scraping_script.sync_playwright')
     def test_login(self, mock_playwright):
         """Test login functionality with Playwright."""
